@@ -108,18 +108,48 @@
       }
     }
     return result;
+    // var result = _.filter(collection, function (item) {
+    //   if (test(item) === false) {
+    //     return item;
+    //   }
+    // });
+    // return result;
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
-  };
+    var result = [];
+    var transformedArr = [];
 
+    if (typeof iterator === 'function') {
+      for (var x = 0; x < array.length; x++) {
+        var transformedItem = iterator(array[x]);
+        if (transformedArr.indexOf(transformedItem) === -1) {
+          transformedArr.push(transformedItem);
+          result.push(array[x]);
+        }
+      }
+    } else {
+      for (var x = 0; x < array.length; x++) {
+        if (result.indexOf(array[x]) === -1) {
+          result.push(array[x]);
+        }
+      }
+    }
+    return result;
+  };
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    var result = [];
+    for (var x = 0; x < collection.length; x++) {
+      result.push(iterator(collection[x]));
+    }
+
+    return result;
   };
 
   /*
