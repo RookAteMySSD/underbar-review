@@ -405,7 +405,7 @@
           { name: 'curly', age: 50 }
         ];
 
-        expect(_.pluck(people, 'name')).to.equal(['moe', 'curly']);
+        expect(_.pluck(people, 'name')).to.eql(['moe', 'curly']);
       });
 
       it('should not modify the original array', function() {
@@ -416,7 +416,7 @@
 
         _.pluck(people, 'name');
 
-        expect(people).to.equal([{ name: 'moe', age: 30 }, { name: 'curly', age: 50 }]);
+        expect(people).to.eql([{ name: 'moe', age: 30 }, { name: 'curly', age: 50 }]);
       });
     });
 
@@ -473,6 +473,7 @@
         var orderTraversed = [];
 
         _.reduce([1, 2, 3, 4], function(memo, item) {
+          orderTraversed.push(item);
           return memo + item;
         }, 10);
 
@@ -525,6 +526,14 @@
         });
 
         expect(result).to.equal(0);
+      });
+
+      it('should work with objects', function() {
+        var result = _.reduce({a: 1, b: 2, c: 3}, function(memo, item) {
+          return memo + item;
+        }, 0);
+
+        expect(result).to.equal(6);
       });
 
     });

@@ -191,6 +191,38 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    // if (Array.isArray(collection)) {
+    //   if (accumulator === undefined) {
+    //     accumulator = collection[0];
+    //     for (let x = 1; x < collection.length; x++) {
+    //       accumulator = iterator(accumulator, collection[x]);
+    //     }
+    //   } else {
+    //     for (let x = 0; x < collection.length; x++) {
+    //       accumulator = iterator(accumulator, collection[x]);
+    //     }
+    //   }
+    // } else {
+
+    //   for (var key in collection) {
+    //     accumulator = iterator(accumulator, collection[key]);
+    //   }
+    // }
+    // return accumulator;
+    if (accumulator === undefined) {
+      accumulator = collection[0];
+      _.each(collection, function (element, index, list) {
+        if (index === 0) {
+          return;
+        }
+        accumulator = iterator(accumulator, element);
+      });
+    } else {
+      _.each(collection, function (element, index, list) {
+        accumulator = iterator(accumulator, element);
+      });
+    }
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -209,12 +241,40 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    var result = true;
+
+    _.reduce(collection, function (memo, value, index, list) {
+      if (iterator) {
+        value = iterator(value);
+      }
+      if (value) {
+        return memo;
+      } else {
+        result = false;
+      }
+    }, true);
+
+    return result;
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    var result = false;
+
+    _.reduce(collection, function (memo, value, index, list) {
+      if (iterator) {
+        value = iterator(value);
+      }
+      if (value) {
+        result = true;
+      } else {
+        return memo;
+      }
+    }, false);
+
+    return result;
   };
 
 
@@ -237,11 +297,37 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    let ArrayOfKeys = [];
+    let ArrayOfValues = [];
+    for (let x = 1; x < arguments.length; x++) {
+      for (var key in arguments[x]) {
+        ArrayOfKeys.push(key);
+        ArrayOfValues.push(arguments[x][key]);
+      }
+    }
+    for (let x = 0; x < ArrayOfKeys.length; x++) {
+      obj[ArrayOfKeys[x]] = ArrayOfValues[x];
+    }
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    let ArrayOfKeys = [];
+    let ArrayOfValues = [];
+    for (let x = 1; x < arguments.length; x++) {
+      for (var key in arguments[x]) {
+        ArrayOfKeys.push(key);
+        ArrayOfValues.push(arguments[x][key]);
+      }
+    }
+    for (let x = 0; x < ArrayOfKeys.length; x++) {
+      if (obj[ArrayOfKeys[x]] === undefined) {
+        obj[ArrayOfKeys[x]] = ArrayOfValues[x];
+      }
+    }
+    return obj;
   };
 
 
@@ -285,6 +371,19 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var Cache = {};
+
+    // before func should do something, it should check the result obj
+    // if the result obj contains a previously called key, return the value
+    // if the result obj does not containa  previously called key, run func
+    // return the results of func to an object
+    // return function () {
+    //   if (/* funct arg not called */ ) {
+    //     /* apply to cache*/
+    //   }
+    //   return Cache./*key*/
+    // };
+
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -294,6 +393,7 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    /* use settimeout (func(args)) */
   };
 
 
@@ -308,6 +408,11 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    /* clone array
+    loop array
+      choose a random element
+      push element into empty array and delete element from cloned array
+    return shuffled array*/
   };
 
 
